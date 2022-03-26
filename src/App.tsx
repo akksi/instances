@@ -1,22 +1,21 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import CategoryListItem from "./components/CategoryListItem";
+import {Category} from "./types";
 
-function App() {
+const App = () => {
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_BASE_URL}/Category`)
+      .then(response => response.json())
+      .then(categories => setCategories(categories));
+  }, [])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Categories</h2>
+      {categories.map((category) => <CategoryListItem key={category.id} category={category} />)}
     </div>
   );
 }
