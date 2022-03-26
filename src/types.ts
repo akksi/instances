@@ -3,3 +3,8 @@ export type Category = {
   name: string
 }
 
+export type Instance = {
+  id: number
+  name: string
+}
+
