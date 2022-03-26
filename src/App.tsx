@@ -1,10 +1,11 @@
-import React, {useEffect, useState, FocusEvent} from 'react';
-import './App.css';
-import CategoryListItem from "./components/CategoryListItem";
-import {Category} from "./types";
+import React, {useEffect, useState, FocusEvent} from 'react'
+import './App.css'
+import CategoryListItem from "./components/CategoryListItem"
+import {Category} from "./types"
 
 const App = () => {
   const [categories, setCategories] = useState<Category[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<Category['id']>()
   const [searchQuery, setSearchQuery] = useState("")
   const [loading, setLoading] = useState(true)
 
@@ -16,6 +17,10 @@ const App = () => {
     setLoading(true)
   }
 
+  const handleSelectCategory = (id: Category['id']) => {
+    setSelectedCategory(id)
+  }
+
   useEffect(() => {
     if (!loading) {
       return
@@ -24,25 +29,39 @@ const App = () => {
     fetch(`${process.env.REACT_APP_API_BASE_URL}/Category${searchQuery ?`q=${searchQuery}` : ""}`)
       .then(response => {
         if (response.status === 200) {
-          return response.json();
+          return response.json()
         }
 
         return []
       })
       .then(
-        categories => setCategories(categories),
-        () => setCategories([])
+        categories => {
+          setCategories(categories)
+          if (!selectedCategory) {
+            setSelectedCategory(categories[0].id)
+          }
+          setLoading(false)
+        },
+        () => {
+          setCategories([])
+          setLoading(false)
+        }
       );
-
-    setLoading(false)
-  }, [loading])
+    }, [loading])
 
   return (
     <div className="App">
       <input type="search" value={searchQuery} onChange={handleChangeSearchQuery} onBlur={handleBlurSearchQuery} />
       <h2>Categories</h2>
-      {!loading && !categories.length && <p>No categories found.</p>}
-      {categories.map((category) => <CategoryListItem key={category.id} category={category} />)}
+      {(!loading && !categories.length) && <p>No categories found.</p>}
+      {categories.map((category) => (
+        <CategoryListItem
+          key={category.id}
+          category={category}
+          onSelect={handleSelectCategory}
+          selected={category.id === selectedCategory}
+        />
+      ))}
     </div>
   );
 }
