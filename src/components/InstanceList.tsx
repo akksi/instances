@@ -23,9 +23,9 @@ const InstanceList = ({categoryId}: Props) => {
   useEffect(() => {
     setLoading(true)
 
-    get(`${process.env.REACT_APP_API_BASE_URL}/Instance`)
+    get(`${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`)
       .then(
-        instances => {
+        ({instances}) => {
           setInstances(instances)
           setLoading(false)
         },
@@ -43,7 +43,7 @@ const InstanceList = ({categoryId}: Props) => {
   const handleDropInstance = () => {
     put(
       `${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`,
-      {order: instances.map(({id}) => id)}
+      {instances}
     ).then(() => {
         setDragging(undefined)
       })

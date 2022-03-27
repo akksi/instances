@@ -8,9 +8,17 @@ type Props = {
   onDelete: (id: Category['id']) => void
 }
 
-const CategoryListItem = ({category: {id, name}, onSelect, selected, onDelete}: Props) => {
+const CategoryListItem = ({category: {id, name, instances}, onSelect, selected, onDelete}: Props) => {
   const handleClickDelete = (e: MouseEvent) => {
     e.stopPropagation()
+    const confirmed = instances.length
+      ? window.confirm("This category is not empty. Are you sure you want to proceed?")
+      : true
+
+    if (!confirmed) {
+      return
+    }
+
     onDelete(id)
   }
 
@@ -19,7 +27,7 @@ const CategoryListItem = ({category: {id, name}, onSelect, selected, onDelete}: 
       className={selected ? "selected" : ""}
       onClick={() => onSelect(id)}
     >
-      {name}
+      {name} ({instances.length})
       <button onClick={handleClickDelete}>Delete</button>
     </li>
   );
