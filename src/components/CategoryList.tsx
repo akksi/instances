@@ -1,4 +1,4 @@
-import React, {FocusEvent, useEffect, useState} from "react"
+import React, {Dispatch, FocusEvent, SetStateAction, useEffect, useState} from "react"
 import CategoryListItem from "./CategoryListItem";
 import {Category} from "../types";
 import {del, get} from "../services/api";
@@ -6,10 +6,11 @@ import {del, get} from "../services/api";
 type Props = {
   onSelect: (id?: Category['id']) => void
   selected?: Category['id']
+  categories: Category[]
+  setCategories: Dispatch<SetStateAction<Category[]>>
 }
 
-const CategoryList = ({onSelect, selected}: Props) => {
-  const [categories, setCategories] = useState<Category[]>([])
+const CategoryList = ({onSelect, selected, categories, setCategories}: Props) => {
   const [searchQuery, setSearchQuery] = useState("")
   const [loadingCategories, setLoadingCategories] = useState(true)
 

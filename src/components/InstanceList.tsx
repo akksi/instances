@@ -1,4 +1,4 @@
-import React, {useEffect, useState, DragEvent} from "react"
+import React, {useEffect, useState, DragEvent, Dispatch} from "react"
 import InstanceListItem from "./InstanceListItem";
 import {Category, Instance} from "../types";
 import {get, put} from "../services/api";
@@ -14,9 +14,10 @@ const moveInstance = (from: number, to: number, prevInstances: Instance[]) => {
 
 type Props = {
   categoryId: Category['id']
+  onUpdate: Dispatch<React.SetStateAction<Category[]>>
 }
 
-const InstanceList = ({categoryId}: Props) => {
+const InstanceList = ({categoryId, onUpdate}: Props) => {
   const [instances, setInstances] = useState<Instance[]>([])
   const [loading, setLoading] = useState(false)
   const [dragging, setDragging] = useState<number>()
@@ -37,10 +38,16 @@ const InstanceList = ({categoryId}: Props) => {
       );
   }, [categoryId])
 
-  const saveInstances = () => put(
-    `${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`,
-    {instances}
-  )
+  const saveInstances = () => {
+    put(
+      `${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`,
+      {instances}
+    ).then(() => {
+      onUpdate(prevCategories => prevCategories.map(
+        category => category.id === categoryId ? {...category, instances} : category)
+      )
+    })
+  }
 
   useEffect(() => {
     saveInstances()
@@ -51,9 +58,8 @@ const InstanceList = ({categoryId}: Props) => {
   }
 
   const handleDropInstance = () => {
-    saveInstances().then(() => {
-        setDragging(undefined)
-      })
+    saveInstances()
+    setDragging(undefined)
   }
 
   const handleDragOverInstance = (e: DragEvent<HTMLLIElement>, index: number) => {
