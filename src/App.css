@@ -1,3 +1,6 @@
 .selected {
     font-weight: bold;
 }
+.dragging {
+    font-style: italic;
+}
