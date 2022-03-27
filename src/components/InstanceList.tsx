@@ -1,7 +1,7 @@
 import React, {useEffect, useState, DragEvent} from "react"
 import InstanceListItem from "./InstanceListItem";
 import {Category, Instance} from "../types";
-import {get} from "../services/api";
+import {get, put} from "../services/api";
 
 const moveInstance = (from: number, to: number, prevInstances: Instance[]) => {
   const sortedInstances = [...prevInstances]
@@ -41,7 +41,12 @@ const InstanceList = ({categoryId}: Props) => {
   }
 
   const handleDropInstance = () => {
-    setDragging(undefined)
+    put(
+      `${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`,
+      {order: instances.map(({id}) => id)}
+    ).then(() => {
+        setDragging(undefined)
+      })
   }
 
   const handleDragOverInstance = (e: DragEvent<HTMLLIElement>, index: number) => {

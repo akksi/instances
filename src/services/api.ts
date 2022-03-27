@@ -17,3 +17,22 @@ export const del = async (url: string) => {
 
   return false
 }
+
+export const put = async (url: string, data: any) => {
+  const response = await fetch(
+    url,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    }
+  )
+
+  if (response.status === 200) {
+    return true
+  }
+
+  return false
+}
