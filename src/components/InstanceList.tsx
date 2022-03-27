@@ -2,6 +2,7 @@ import React, {useEffect, useState, DragEvent} from "react"
 import InstanceListItem from "./InstanceListItem";
 import {Category, Instance} from "../types";
 import {get, put} from "../services/api";
+import AddInstance from "./AddInstance";
 
 const moveInstance = (from: number, to: number, prevInstances: Instance[]) => {
   const sortedInstances = [...prevInstances]
@@ -36,15 +37,21 @@ const InstanceList = ({categoryId}: Props) => {
       );
   }, [categoryId])
 
+  const saveInstances = () => put(
+    `${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`,
+    {instances}
+  )
+
+  useEffect(() => {
+    saveInstances()
+  }, [instances.length])
+
   const handleDragStartInstance = (index: number) => {
     setDragging(index)
   }
 
   const handleDropInstance = () => {
-    put(
-      `${process.env.REACT_APP_API_BASE_URL}/Category/${categoryId}`,
-      {instances}
-    ).then(() => {
+    saveInstances().then(() => {
         setDragging(undefined)
       })
   }
@@ -76,6 +83,8 @@ const InstanceList = ({categoryId}: Props) => {
           />
         ))}
       </ul>
+      <h3>Add new Instance</h3>
+      <AddInstance onSave={setInstances} />
     </>
   );
 }
