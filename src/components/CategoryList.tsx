@@ -1,7 +1,7 @@
 import React, {FocusEvent, useEffect, useState} from "react"
 import CategoryListItem from "./CategoryListItem";
 import {Category} from "../types";
-import {get} from "../services/api";
+import {del, get} from "../services/api";
 
 type Props = {
   onSelect: (id?: Category['id']) => void
@@ -23,6 +23,17 @@ const CategoryList = ({onSelect, selected}: Props) => {
 
   const handleSelectCategory = (id: Category['id']) => {
     onSelect(id)
+  }
+
+  const handleDeleteCategory = (id: Category['id']) => {
+    del(`${process.env.REACT_APP_API_BASE_URL}/Category/${id}`)
+      .then(() => {
+        setCategories(prevCategories => prevCategories.filter(({id: categoryId}) => categoryId !== id))
+      })
+
+    if (selected === id) {
+      onSelect(undefined)
+    }
   }
 
   useEffect(() => {
@@ -60,6 +71,7 @@ const CategoryList = ({onSelect, selected}: Props) => {
             category={category}
             onSelect={handleSelectCategory}
             selected={category.id === selected}
+            onDelete={handleDeleteCategory}
           />
         ))}
       </ul>

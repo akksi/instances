@@ -7,3 +7,13 @@ export const get = async (url: string) => {
 
   return []
 }
+
+export const del = async (url: string) => {
+  const response = await fetch(url, {method: 'DELETE'})
+
+  if (response.status === 200) {
+    return true
+  }
+
+  return false
+}
