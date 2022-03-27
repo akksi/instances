@@ -42,7 +42,7 @@ const CategoryList = ({onSelect, selected, categories, setCategories}: Props) =>
       return
     }
 
-    get(`${process.env.REACT_APP_API_BASE_URL}/Category${searchQuery ?`q=${searchQuery}` : ""}`)
+    get(`${process.env.REACT_APP_API_BASE_URL}/Category${searchQuery ?`name=${searchQuery}` : ""}`)
       .then(
         categories => {
           setCategories(categories)
@@ -62,7 +62,7 @@ const CategoryList = ({onSelect, selected, categories, setCategories}: Props) =>
 
   return (
     <>
-      <input type="search" value={searchQuery} onChange={handleChangeSearchQuery} onBlur={handleBlurSearchQuery}/>
+      <input type="search" placeholder="Search categories" value={searchQuery} onChange={handleChangeSearchQuery} onBlur={handleBlurSearchQuery}/>
       <h2>Categories</h2>
       {(!loadingCategories && !categories.length) && <p>No categories found.</p>}
       <ul>
